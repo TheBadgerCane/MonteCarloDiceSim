@@ -9,12 +9,14 @@ namespace MonteCarloDiceSimulation
     internal class Calculations
     {
         //private values for handling calculations
-        private float diceSideTotal;
+        private int diceSideTotal;
         private float diceSideAverage;
-        private float diceRollTotal;
+        private int diceRollTotal;
         private float diceRollAverage;
-        private float diceRollSingleValue;
-        private float diceRollSingleMax;
+        private int diceRollSingleValue;
+        private int diceRollSingleMax;
+        private List<int> diceRollResultsList = new List<int>();
+        private Random rng = new Random();
 
         //private values for handling user input
         private int diceSides;
@@ -28,5 +30,37 @@ namespace MonteCarloDiceSimulation
         public int SimIterations { get => simIterations; set => simIterations = value; }
         public bool IsSaveResult { get => isSaveResult; set => isSaveResult = value; }
 
+        private void InitialSetup()
+        {
+            for (int i = 1; i <= diceSides; i++)
+            {
+                diceSideTotal += i;
+            }
+
+            diceSideAverage = diceSideTotal / diceSides;
+        }
+
+        private int SingleRoll()
+        {
+            diceRollResultsList.Clear();
+            for (int i = 0; i < diceCount; i++)
+            {
+                diceRollSingleValue = rng.Next(1, diceSides + 1);
+                diceRollResultsList.Add(diceRollSingleValue);
+            }
+            diceRollSingleMax = diceRollResultsList.Max();
+            return diceRollSingleMax;
+        }
+
+        public float CalculateResult()
+        {
+            InitialSetup();
+            for (int i = 0; i < simIterations; i++)
+            {
+                diceRollTotal += SingleRoll();
+            }
+            diceRollAverage = (float)diceRollTotal / (float)simIterations;
+            return diceRollAverage;
+         }
     }
 }
